@@ -1,0 +1,147 @@
+import { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { getQuotes, saveQuotes, Quote } from '../utils/storage';
+
+export default function EditQuote() {
+  const params = useLocalSearchParams();
+  const router = useRouter();
+  const [text, setText] = useState('');
+  const [source, setSource] = useState('');
+
+  useEffect(() => {
+    if (params.text) {
+      setText(params.text as string);
+    }
+    if (params.source) {
+      setSource(params.source as string);
+    }
+  }, [params]);
+
+  const handleSave = async () => {
+    const trimmedText = text.trim();
+    const trimmedSource = source.trim();
+
+    if (!trimmedText) {
+      Alert.alert('Ошибка', 'Текст цитаты не может быть пустым');
+      return;
+    }
+
+    try {
+      const quotes = await getQuotes();
+      const updatedQuotes = quotes.map((quote) =>
+        quote.id === params.id
+          ? { ...quote, text: trimmedText, source: trimmedSource }
+          : quote
+      );
+      await saveQuotes(updatedQuotes);
+      router.back();
+    } catch (error) {
+      Alert.alert('Ошибка', 'Не удалось сохранить изменения');
+    }
+  };
+
+  const handleCancel = () => {
+    router.back();
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.content}>
+        <Text style={styles.label}>Текст цитаты *</Text>
+        <TextInput
+          style={styles.textInput}
+          multiline
+          numberOfLines={6}
+          placeholder="Введите текст цитаты..."
+          value={text}
+          onChangeText={setText}
+          textAlignVertical="top"
+        />
+
+        <Text style={styles.label}>Источник (автор)</Text>
+        <TextInput
+          style={styles.textInput}
+          placeholder="Введите автора или источник..."
+          value={source}
+          onChangeText={setSource}
+        />
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.cancelButton]}
+            onPress={handleCancel}
+          >
+            <Text style={styles.cancelButtonText}>Отмена</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.saveButton]}
+            onPress={handleSave}
+          >
+            <Text style={styles.saveButtonText}>Сохранить</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  content: {
+    padding: 20,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+    color: '#333',
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    marginBottom: 20,
+    minHeight: 120,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 20,
+  },
+  button: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#f0f0f0',
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+  },
+  saveButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+  },
+});
