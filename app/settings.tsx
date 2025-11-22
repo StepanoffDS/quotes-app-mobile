@@ -11,6 +11,7 @@ import { Theme } from '../utils/theme';
 const themeOptions: { label: string; value: Theme }[] = [
   { label: 'Светлая', value: 'light' },
   { label: 'Темная', value: 'dark' },
+  { label: 'Системная', value: 'system' },
 ];
 
 export default function Settings() {

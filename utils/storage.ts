@@ -25,3 +25,8 @@ export async function saveQuotes(quotes: Quote[]): Promise<void> {
     console.error('Error saving quotes:', error);
   }
 }
+
+export async function getQuoteById(id: string): Promise<Quote | null> {
+  const quotes = await getQuotes();
+  return quotes.find((quote) => quote.id === id) || null;
+}

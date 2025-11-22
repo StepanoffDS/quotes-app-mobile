@@ -23,27 +23,36 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const systemColorScheme = useColorScheme();
-  const [theme, setTheme] = useState<Theme>(() => {
-    return systemColorScheme === 'dark' ? 'dark' : 'light';
-  });
+  const [theme, setTheme] = useState<Theme>('system');
+
+  const actualTheme = useMemo(() => {
+    if (theme === 'system') {
+      return systemColorScheme === 'dark' ? 'dark' : 'light';
+    }
+    return theme;
+  }, [theme, systemColorScheme]);
 
   useEffect(() => {
     loadTheme();
   }, []);
 
+  useEffect(() => {}, [systemColorScheme, theme]);
+
   const loadTheme = async () => {
     try {
       const savedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
-      if (savedTheme === 'light' || savedTheme === 'dark') {
-        setTheme(savedTheme);
+      if (
+        savedTheme === 'light' ||
+        savedTheme === 'dark' ||
+        savedTheme === 'system'
+      ) {
+        setTheme(savedTheme as Theme);
       } else {
-        const initialTheme = systemColorScheme === 'dark' ? 'dark' : 'light';
-        setTheme(initialTheme);
+        setTheme('system');
       }
     } catch (error) {
       console.error('Failed to load theme:', error);
-      const fallbackTheme = systemColorScheme === 'dark' ? 'dark' : 'light';
-      setTheme(fallbackTheme);
+      setTheme('system');
     }
   };
 
@@ -57,11 +66,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const toggleTheme = useCallback(() => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-  }, [theme]);
+    const newTheme = actualTheme === 'light' ? 'dark' : 'light';
+    saveTheme(newTheme);
+  }, [actualTheme, saveTheme]);
 
-  const colors = getColors(theme);
+  const colors = getColors(actualTheme);
 
   const contextValue: ThemeContextType = useMemo(
     () => ({

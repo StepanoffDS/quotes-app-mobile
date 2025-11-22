@@ -55,8 +55,6 @@ export default function QuotesList() {
       pathname: '/edit',
       params: {
         id: quote.id,
-        text: quote.text,
-        source: quote.source,
       },
     });
   };
@@ -133,82 +131,85 @@ export default function QuotesList() {
   );
 }
 
-const createStyles = (colors: ReturnType<typeof import('../utils/theme').getColors>) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  searchContainer: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.borderLight,
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: colors.surface,
-    color: colors.text,
-  },
-  listContent: {
-    padding: 20,
-  },
-  quoteCard: {
-    backgroundColor: colors.surface,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
-  },
-  quoteText: {
-    fontSize: 18,
-    fontStyle: 'italic',
-    marginBottom: 12,
-    color: colors.text,
-    lineHeight: 26,
-  },
-  quoteSource: {
-    fontSize: 16,
-    textAlign: 'right',
-    color: colors.textSecondary,
-    marginBottom: 12,
-    fontWeight: '500',
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 8,
-  },
-  editButton: {
-    flex: 1,
-    backgroundColor: colors.primary,
-    padding: 10,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  deleteButton: {
-    flex: 1,
-    backgroundColor: colors.error,
-    padding: 10,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  editButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  deleteButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 18,
-    color: colors.textTertiary,
-  },
-});
+const createStyles = (
+  colors: ReturnType<typeof import('../utils/theme').getColors>,
+) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    searchContainer: {
+      padding: 20,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.borderLight,
+    },
+    searchInput: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 16,
+      backgroundColor: colors.surface,
+      color: colors.text,
+    },
+    listContent: {
+      padding: 20,
+    },
+    quoteCard: {
+      backgroundColor: colors.surface,
+      padding: 16,
+      borderRadius: 8,
+      marginBottom: 16,
+    },
+    quoteText: {
+      fontSize: 18,
+      fontStyle: 'italic',
+      marginBottom: 12,
+      color: colors.text,
+      lineHeight: 26,
+    },
+    quoteSource: {
+      fontSize: 16,
+      textAlign: 'right',
+      color: colors.textSecondary,
+      marginBottom: 12,
+      fontWeight: '500',
+    },
+    actions: {
+      flexDirection: 'row',
+      gap: 10,
+      marginTop: 8,
+    },
+    editButton: {
+      flex: 1,
+      backgroundColor: colors.primary,
+      padding: 10,
+      borderRadius: 6,
+      alignItems: 'center',
+    },
+    deleteButton: {
+      flex: 1,
+      backgroundColor: colors.error,
+      padding: 10,
+      borderRadius: 6,
+      alignItems: 'center',
+    },
+    editButtonText: {
+      color: '#fff',
+      fontWeight: '600',
+    },
+    deleteButtonText: {
+      color: '#fff',
+      fontWeight: '600',
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emptyText: {
+      fontSize: 18,
+      color: colors.textTertiary,
+    },
+  });
