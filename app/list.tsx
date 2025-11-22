@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { getQuotes, saveQuotes, Quote } from '../utils/storage';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function QuotesList() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [filteredQuotes, setFilteredQuotes] = useState<Quote[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
+  const { colors } = useTheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -78,6 +80,8 @@ export default function QuotesList() {
     );
   };
 
+  const styles = createStyles(colors);
+
   const renderQuote = ({ item }: { item: Quote }) => (
     <View style={styles.quoteCard}>
       <Text style={styles.quoteText}>"{item.text}"</Text>
@@ -105,6 +109,7 @@ export default function QuotesList() {
         <TextInput
           style={styles.searchInput}
           placeholder='Поиск по тексту или источнику...'
+          placeholderTextColor={colors.placeholder}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
@@ -128,28 +133,30 @@ export default function QuotesList() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof import('../utils/theme').getColors>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
   searchContainer: {
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: colors.borderLight,
   },
   searchInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
+    backgroundColor: colors.surface,
+    color: colors.text,
   },
   listContent: {
     padding: 20,
   },
   quoteCard: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: colors.surface,
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
@@ -158,13 +165,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontStyle: 'italic',
     marginBottom: 12,
-    color: '#333',
+    color: colors.text,
     lineHeight: 26,
   },
   quoteSource: {
     fontSize: 16,
     textAlign: 'right',
-    color: '#666',
+    color: colors.textSecondary,
     marginBottom: 12,
     fontWeight: '500',
   },
@@ -175,14 +182,14 @@ const styles = StyleSheet.create({
   },
   editButton: {
     flex: 1,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     padding: 10,
     borderRadius: 6,
     alignItems: 'center',
   },
   deleteButton: {
     flex: 1,
-    backgroundColor: '#FF3B30',
+    backgroundColor: colors.error,
     padding: 10,
     borderRadius: 6,
     alignItems: 'center',
@@ -202,6 +209,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: '#999',
+    color: colors.textTertiary,
   },
 });

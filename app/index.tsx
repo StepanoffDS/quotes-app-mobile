@@ -8,11 +8,13 @@ import {
   View,
 } from 'react-native';
 import { getQuotes, Quote } from '../utils/storage';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function Index() {
   const [currentQuote, setCurrentQuote] = useState<Quote | null>(null);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const router = useRouter();
+  const { colors } = useTheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -33,6 +35,8 @@ export default function Index() {
     const randomIndex = Math.floor(Math.random() * quotesList.length);
     setCurrentQuote(quotesList[randomIndex]);
   };
+
+  const styles = createStyles(colors);
 
   return (
     <View style={styles.container}>
@@ -78,66 +82,69 @@ export default function Index() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  quoteContainer: {
-    alignItems: 'center',
-  },
-  quoteText: {
-    fontSize: 24,
-    fontStyle: 'italic',
-    textAlign: 'center',
-    marginBottom: 20,
-    color: '#333',
-    lineHeight: 36,
-  },
-  quoteSource: {
-    fontSize: 18,
-    textAlign: 'right',
-    color: '#666',
-    fontWeight: '500',
-  },
-  emptyContainer: {
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 20,
-    color: '#999',
-    marginBottom: 10,
-  },
-  emptySubtext: {
-    fontSize: 16,
-    color: '#bbb',
-  },
-  buttonContainer: {
-    padding: 20,
-    gap: 10,
-  },
-  button: {
-    backgroundColor: '#f0f0f0',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  primaryButton: {
-    backgroundColor: '#007AFF',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-  },
-  primaryButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-  },
-});
+const createStyles = (
+  colors: ReturnType<typeof import('../utils/theme').getColors>,
+) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      padding: 20,
+    },
+    quoteContainer: {
+      alignItems: 'center',
+    },
+    quoteText: {
+      fontSize: 24,
+      fontStyle: 'italic',
+      textAlign: 'center',
+      marginBottom: 20,
+      color: colors.text,
+      lineHeight: 36,
+    },
+    quoteSource: {
+      fontSize: 18,
+      textAlign: 'right',
+      color: colors.textSecondary,
+      fontWeight: '500',
+    },
+    emptyContainer: {
+      alignItems: 'center',
+    },
+    emptyText: {
+      fontSize: 20,
+      color: colors.textTertiary,
+      marginBottom: 10,
+    },
+    emptySubtext: {
+      fontSize: 16,
+      color: colors.textDisabled,
+    },
+    buttonContainer: {
+      padding: 20,
+      gap: 10,
+    },
+    button: {
+      backgroundColor: colors.card,
+      padding: 15,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    primaryButton: {
+      backgroundColor: colors.primary,
+    },
+    buttonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    primaryButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#fff',
+    },
+  });

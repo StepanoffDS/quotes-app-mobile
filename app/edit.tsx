@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getQuotes, saveQuotes, Quote } from '../utils/storage';
+import { useTheme } from '../contexts/ThemeContext';
 
 export default function EditQuote() {
   const params = useLocalSearchParams();
   const router = useRouter();
   const [text, setText] = useState('');
   const [source, setSource] = useState('');
+  const { colors } = useTheme();
 
   useEffect(() => {
     if (params.text) {
@@ -53,6 +55,8 @@ export default function EditQuote() {
     router.back();
   };
 
+  const styles = createStyles(colors);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.content}>
@@ -62,6 +66,7 @@ export default function EditQuote() {
           multiline
           numberOfLines={6}
           placeholder="Введите текст цитаты..."
+          placeholderTextColor={colors.placeholder}
           value={text}
           onChangeText={setText}
           textAlignVertical="top"
@@ -71,6 +76,7 @@ export default function EditQuote() {
         <TextInput
           style={styles.textInput}
           placeholder="Введите автора или источник..."
+          placeholderTextColor={colors.placeholder}
           value={source}
           onChangeText={setSource}
         />
@@ -94,10 +100,10 @@ export default function EditQuote() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ReturnType<typeof import('../utils/theme').getColors>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.background,
   },
   content: {
     padding: 20,
@@ -106,16 +112,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-    color: '#333',
+    color: colors.text,
   },
   textInput: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: colors.border,
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
     marginBottom: 20,
     minHeight: 120,
+    backgroundColor: colors.surface,
+    color: colors.text,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -129,15 +137,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: colors.card,
   },
   saveButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
   },
   cancelButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: colors.text,
   },
   saveButtonText: {
     fontSize: 16,
