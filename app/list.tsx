@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,11 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { getQuotes, saveQuotes, Quote } from '../utils/storage';
 import { useTheme } from '../contexts/ThemeContext';
+import { debounce } from '../utils/debounce';
 
 export default function QuotesList() {
   const [quotes, setQuotes] = useState<Quote[]>([]);
@@ -25,30 +27,36 @@ export default function QuotesList() {
     }, []),
   );
 
-  useEffect(() => {
-    filterQuotes();
-  }, [searchQuery, quotes]);
-
   const loadQuotes = async () => {
     const loadedQuotes = await getQuotes();
     setQuotes(loadedQuotes);
     setFilteredQuotes(loadedQuotes);
   };
 
-  const filterQuotes = () => {
-    if (!searchQuery.trim()) {
-      setFilteredQuotes(quotes);
+  const filterQuotes = useCallback((query: string, quotesList: Quote[]) => {
+    if (!query.trim()) {
+      setFilteredQuotes(quotesList);
       return;
     }
 
-    const query = searchQuery.toLowerCase();
-    const filtered = quotes.filter(
+    const lowerQuery = query.toLowerCase();
+    const filtered = quotesList.filter(
       (quote) =>
-        quote.text.toLowerCase().includes(query) ||
-        (quote.source ?? '').toLowerCase().includes(query),
+        quote.text.toLowerCase().includes(lowerQuery) ||
+        (quote.source ?? '').toLowerCase().includes(lowerQuery),
     );
     setFilteredQuotes(filtered);
-  };
+  }, []);
+
+  const debouncedFilterQuotes = useRef(
+    debounce((query: string, quotesList: Quote[]) => {
+      filterQuotes(query, quotesList);
+    }, 300),
+  ).current;
+
+  useEffect(() => {
+    debouncedFilterQuotes(searchQuery, quotes);
+  }, [searchQuery, quotes, debouncedFilterQuotes, filterQuotes]);
 
   const handleEdit = (quote: Quote) => {
     router.push({
@@ -80,29 +88,48 @@ export default function QuotesList() {
 
   const styles = createStyles(colors);
 
-  const renderQuote = ({ item }: { item: Quote }) => (
-    <View style={styles.quoteCard}>
-      <Text style={styles.quoteText}>"{item.text}"</Text>
-      {item.source && <Text style={styles.quoteSource}>— {item.source}</Text>}
-      <View style={styles.actions}>
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => handleEdit(item)}
-        >
-          <Text style={styles.editButtonText}>Редактировать</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => handleDelete(item.id)}
-        >
-          <Text style={styles.deleteButtonText}>Удалить</Text>
-        </TouchableOpacity>
+  const renderQuote = ({ item }: { item: Quote }) => {
+    const formatDate = (date: Date | string | undefined) => {
+      if (!date) return '';
+      const dateObj = date instanceof Date ? date : new Date(date);
+      if (Number.isNaN(dateObj.getTime())) return '';
+      return dateObj.toLocaleDateString('ru-RU', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+    };
+
+    return (
+      <View style={styles.quoteCard}>
+        {item.createdAt && (
+          <Text style={styles.quoteDate}>{formatDate(item.createdAt)}</Text>
+        )}
+        <Text style={styles.quoteText}>"{item.text}"</Text>
+        {item.source && <Text style={styles.quoteSource}>— {item.source}</Text>}
+        <View style={styles.actions}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => handleEdit(item)}
+          >
+            <Text style={styles.editButtonText}>Редактировать</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => handleDelete(item.id)}
+          >
+            <Text style={styles.deleteButtonText}>Удалить</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+      edges={['top']}
+    >
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
@@ -127,7 +154,7 @@ export default function QuotesList() {
           contentContainerStyle={styles.listContent}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -161,6 +188,11 @@ const createStyles = (
       padding: 16,
       borderRadius: 8,
       marginBottom: 16,
+    },
+    quoteDate: {
+      fontSize: 12,
+      color: colors.textSecondary,
+      marginBottom: 12,
     },
     quoteText: {
       fontSize: 18,

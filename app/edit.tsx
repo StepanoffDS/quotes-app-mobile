@@ -8,6 +8,7 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { getQuoteById, getQuotes, saveQuotes } from '../utils/storage';
 import { useTheme } from '../contexts/ThemeContext';
@@ -64,45 +65,50 @@ export default function EditQuote() {
   const styles = createStyles(colors);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Текст цитаты *</Text>
-        <TextInput
-          style={styles.textInput}
-          multiline
-          numberOfLines={6}
-          placeholder='Введите текст цитаты...'
-          placeholderTextColor={colors.placeholder}
-          value={text}
-          onChangeText={setText}
-          textAlignVertical='top'
-        />
+    <SafeAreaView
+      style={styles.container}
+      edges={['top']}
+    >
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.content}>
+          <Text style={styles.label}>Текст цитаты *</Text>
+          <TextInput
+            style={styles.textInput}
+            multiline
+            numberOfLines={6}
+            placeholder='Введите текст цитаты...'
+            placeholderTextColor={colors.placeholder}
+            value={text}
+            onChangeText={setText}
+            textAlignVertical='top'
+          />
 
-        <Text style={styles.label}>Источник (автор)</Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder='Введите автора или источник...'
-          placeholderTextColor={colors.placeholder}
-          value={source}
-          onChangeText={setSource}
-        />
+          <Text style={styles.label}>Источник (автор)</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder='Введите автора или источник...'
+            placeholderTextColor={colors.placeholder}
+            value={source}
+            onChangeText={setSource}
+          />
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.cancelButton]}
-            onPress={handleCancel}
-          >
-            <Text style={styles.cancelButtonText}>Отмена</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.saveButton]}
-            onPress={handleSave}
-          >
-            <Text style={styles.saveButtonText}>Сохранить</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={handleCancel}
+            >
+              <Text style={styles.cancelButtonText}>Отмена</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.saveButton]}
+              onPress={handleSave}
+            >
+              <Text style={styles.saveButtonText}>Сохранить</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -113,6 +119,9 @@ const createStyles = (
     container: {
       flex: 1,
       backgroundColor: colors.background,
+    },
+    scrollView: {
+      flex: 1,
     },
     content: {
       padding: 20,

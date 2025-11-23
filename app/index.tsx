@@ -1,4 +1,4 @@
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import {
   ScrollView,
@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getQuotes, Quote } from '../utils/storage';
 import { useTheme } from '../contexts/ThemeContext';
 
 export default function Index() {
   const [currentQuote, setCurrentQuote] = useState<Quote | null>(null);
   const [quotes, setQuotes] = useState<Quote[]>([]);
-  const router = useRouter();
   const { colors } = useTheme();
 
   useFocusEffect(
@@ -39,7 +39,10 @@ export default function Index() {
   const styles = createStyles(colors);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView
+      style={styles.container}
+      edges={['top']}
+    >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {currentQuote ? (
           <View style={styles.quoteContainer}>
@@ -65,14 +68,8 @@ export default function Index() {
             <Text style={styles.buttonText}>Следующая цитата</Text>
           </TouchableOpacity>
         )}
-        <TouchableOpacity
-          style={[styles.button, styles.primaryButton]}
-          onPress={() => router.push('/add')}
-        >
-          <Text style={styles.primaryButtonText}>Добавить цитату</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

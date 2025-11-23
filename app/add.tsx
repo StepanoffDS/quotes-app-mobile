@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { getQuotes, Quote, saveQuotes } from '../utils/storage';
 import { useTheme } from '../contexts/ThemeContext';
 
@@ -30,6 +31,7 @@ export default function AddQuote() {
         id: Date.now().toString(),
         text,
         source,
+        createdAt: new Date(),
       };
       quotes.push(newQuote);
       await saveQuotes(quotes);
@@ -47,97 +49,108 @@ export default function AddQuote() {
   const styles = createStyles(colors);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.label}>Текст цитаты *</Text>
-        <TextInput
-          style={styles.textInput}
-          multiline
-          numberOfLines={6}
-          placeholder='Введите текст цитаты...'
-          placeholderTextColor={colors.placeholder}
-          value={text}
-          onChangeText={setText}
-          textAlignVertical='top'
-        />
+    <SafeAreaView
+      style={styles.container}
+      edges={['top']}
+    >
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.content}>
+          <Text style={styles.label}>Текст цитаты *</Text>
+          <TextInput
+            style={styles.textInput}
+            multiline
+            numberOfLines={6}
+            placeholder='Введите текст цитаты...'
+            placeholderTextColor={colors.placeholder}
+            value={text}
+            onChangeText={setText}
+            textAlignVertical='top'
+          />
 
-        <Text style={styles.label}>Источник </Text>
-        <TextInput
-          style={styles.textInput}
-          placeholder='Введите автора или источник...'
-          placeholderTextColor={colors.placeholder}
-          value={source}
-          onChangeText={setSource}
-        />
+          <Text style={styles.label}>Источник </Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder='Введите автора или источник...'
+            placeholderTextColor={colors.placeholder}
+            value={source}
+            onChangeText={setSource}
+          />
 
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, styles.cancelButton]}
-            onPress={handleCancel}
-          >
-            <Text style={styles.cancelButtonText}>Отмена</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.saveButton]}
-            onPress={handleSave}
-          >
-            <Text style={styles.saveButtonText}>Сохранить</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={[styles.button, styles.cancelButton]}
+              onPress={handleCancel}
+            >
+              <Text style={styles.cancelButtonText}>Отмена</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button, styles.saveButton]}
+              onPress={handleSave}
+            >
+              <Text style={styles.saveButtonText}>Сохранить</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
-const createStyles = (colors: ReturnType<typeof import('../utils/theme').getColors>) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    padding: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: colors.text,
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    marginBottom: 20,
-    backgroundColor: colors.surface,
-    color: colors.text,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 20,
-  },
-  button: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: colors.card,
-  },
-  saveButton: {
-    backgroundColor: colors.primary,
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#fff',
-  },
-});
+const createStyles = (
+  colors: ReturnType<typeof import('../utils/theme').getColors>,
+) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    content: {
+      padding: 20,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: '600',
+      marginBottom: 8,
+      color: colors.text,
+    },
+    textInput: {
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: 8,
+      padding: 12,
+      fontSize: 16,
+      marginBottom: 20,
+      backgroundColor: colors.surface,
+      color: colors.text,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      gap: 10,
+      marginTop: 20,
+    },
+    button: {
+      flex: 1,
+      padding: 15,
+      borderRadius: 8,
+      alignItems: 'center',
+    },
+    cancelButton: {
+      backgroundColor: colors.card,
+    },
+    saveButton: {
+      backgroundColor: colors.primary,
+    },
+    cancelButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    saveButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: '#fff',
+    },
+  });

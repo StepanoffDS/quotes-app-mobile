@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../contexts/ThemeContext';
 import { Theme } from '../utils/theme';
 
@@ -20,43 +21,48 @@ export default function Settings() {
   const styles = createStyles(colors);
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Внешний вид</Text>
+    <SafeAreaView
+      style={styles.container}
+      edges={['top']}
+    >
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.content}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Внешний вид</Text>
 
-          <View style={styles.themeContainer}>
-            <Text style={styles.label}>Тема</Text>
-            <View style={styles.themeOptions}>
-              {themeOptions.map((option) => (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[
-                    styles.themeOption,
-                    theme === option.value && styles.themeOptionActive,
-                  ]}
-                  onPress={() => saveTheme(option.value)}
-                >
-                  <Text
+            <View style={styles.themeContainer}>
+              <Text style={styles.label}>Тема</Text>
+              <View style={styles.themeOptions}>
+                {themeOptions.map((option) => (
+                  <TouchableOpacity
+                    key={option.value}
                     style={[
-                      styles.themeOptionText,
-                      theme === option.value && styles.themeOptionTextActive,
+                      styles.themeOption,
+                      theme === option.value && styles.themeOptionActive,
                     ]}
+                    onPress={() => saveTheme(option.value)}
                   >
-                    {option.label}
-                  </Text>
-                  {theme === option.value && (
-                    <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              ))}
+                    <Text
+                      style={[
+                        styles.themeOptionText,
+                        theme === option.value && styles.themeOptionTextActive,
+                      ]}
+                    >
+                      {option.label}
+                    </Text>
+                    {theme === option.value && (
+                      <View style={styles.checkmark}>
+                        <Text style={styles.checkmarkText}>✓</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -67,6 +73,9 @@ const createStyles = (
     container: {
       flex: 1,
       backgroundColor: colors.background,
+    },
+    scrollView: {
+      flex: 1,
     },
     content: {
       padding: 20,

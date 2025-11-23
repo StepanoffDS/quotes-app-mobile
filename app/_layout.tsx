@@ -1,20 +1,19 @@
 import { Tabs } from 'expo-router';
 import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
 import { AddIcon, HomeIcon, ListIcon, SettingsIcon } from '@/shared/ui/icons';
+import {
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 function TabsNavigator() {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
-        headerStyle: {
-          backgroundColor: colors.primary,
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: '600',
-        },
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: colors.surface,
           borderTopColor: colors.border,
@@ -88,8 +87,10 @@ function TabsNavigator() {
 
 export default function RootLayout() {
   return (
-    <ThemeProvider>
-      <TabsNavigator />
-    </ThemeProvider>
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <TabsNavigator />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
