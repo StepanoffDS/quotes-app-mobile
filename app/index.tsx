@@ -62,7 +62,7 @@ export default function Index() {
             style={styles.button}
             onPress={() => selectRandomQuote()}
           >
-            <Text style={styles.buttonText}>Новая цитата</Text>
+            <Text style={styles.buttonText}>Следующая цитата</Text>
           </TouchableOpacity>
         )}
         <TouchableOpacity
@@ -70,12 +70,6 @@ export default function Index() {
           onPress={() => router.push('/add')}
         >
           <Text style={styles.primaryButtonText}>Добавить цитату</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => router.push('/list')}
-        >
-          <Text style={styles.buttonText}>Все цитаты</Text>
         </TouchableOpacity>
       </View>
     </View>

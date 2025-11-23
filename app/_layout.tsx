@@ -1,14 +1,12 @@
-import { Stack, useRouter } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { ThemeProvider, useTheme } from '../contexts/ThemeContext';
-import { TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { AddIcon, HomeIcon, ListIcon, SettingsIcon } from '@/shared/ui/icons';
 
-function StackNavigator() {
+function TabsNavigator() {
   const { colors } = useTheme();
-  const router = useRouter();
 
   return (
-    <Stack
+    <Tabs
       screenOptions={{
         headerStyle: {
           backgroundColor: colors.primary,
@@ -17,61 +15,81 @@ function StackNavigator() {
         headerTitleStyle: {
           fontWeight: '600',
         },
-        contentStyle: {
-          backgroundColor: colors.background,
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
         },
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textSecondary,
       }}
     >
-      <Stack.Screen
+      <Tabs.Screen
         name='index'
         options={{
           title: 'Цитаты',
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={() => router.push('/settings')}
-              style={{ marginRight: 16 }}
-            >
-              <Ionicons
-                name='settings-outline'
-                size={24}
-                color='#fff'
-              />
-            </TouchableOpacity>
+          tabBarLabel: 'Главная',
+          tabBarIcon: ({ color, size }) => (
+            <HomeIcon
+              color={color}
+              size={size}
+            />
           ),
         }}
       />
-      <Stack.Screen
+      <Tabs.Screen
         name='add'
         options={{
           title: 'Добавить цитату',
+          tabBarLabel: 'Добавить',
+          tabBarIcon: ({ color, size }) => (
+            <AddIcon
+              color={color}
+              size={size}
+            />
+          ),
         }}
       />
-      <Stack.Screen
+      <Tabs.Screen
         name='list'
         options={{
           title: 'Все цитаты',
+          tabBarLabel: 'Список',
+          tabBarIcon: ({ color, size }) => (
+            <ListIcon
+              color={color}
+              size={size}
+            />
+          ),
         }}
       />
-      <Stack.Screen
-        name='edit'
-        options={{
-          title: 'Редактировать цитату',
-        }}
-      />
-      <Stack.Screen
+      <Tabs.Screen
         name='settings'
         options={{
           title: 'Настройки',
+          tabBarLabel: 'Настройки',
+          tabBarIcon: ({ color, size }) => (
+            <SettingsIcon
+              color={color}
+              size={size}
+            />
+          ),
         }}
       />
-    </Stack>
+      <Tabs.Screen
+        name='edit'
+        options={{
+          href: null,
+          title: 'Редактировать цитату',
+        }}
+      />
+    </Tabs>
   );
 }
 
 export default function RootLayout() {
   return (
     <ThemeProvider>
-      <StackNavigator />
+      <TabsNavigator />
     </ThemeProvider>
   );
 }
